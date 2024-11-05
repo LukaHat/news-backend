@@ -3,6 +3,8 @@
     "module": "commonjs",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
     "target": "es6",
     "noImplicitAny": true,
     "moduleResolution": "node",
