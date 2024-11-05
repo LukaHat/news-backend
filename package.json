@@ -4,20 +4,30 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start:dev": "nodemon --exec ts-node src/index.ts",
-    "start:production": "pnpm run build && node build/index.js"
+    "clean": "rimraf dist",
+    "build": "pnpm run clean && tsc",
+    "start:dev": "nodemon --exec ts-node src/app.ts",
+    "prestart:production": "pnpm run build",
+    "start:production": "node dist/app.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@9.12.3+sha512.cce0f9de9c5a7c95bef944169cc5dfe8741abfb145078c0d508b868056848a87c81e626246cb60967cbd7fd29a6c062ef73ff840d96b3c86c40ac92cf4a813ee",
   "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
-    "mongoose": "^8.8.0"
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.8.0",
+    "rimraf": "^6.0.1"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
+    "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^22.8.6",
     "nodemon": "^3.1.7",
     "ts-node": "^10.9.2",
