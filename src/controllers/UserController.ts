@@ -6,32 +6,36 @@ import {
 } from "../repositories/UserRepository";
 import { createUserResponse } from "../utils/createUserResponse";
 import { handleJwt } from "../utils/handleJwt";
+import { handleError, handleSuccess } from "../utils/handleResponse";
+import { StatusCodes } from "../types/apiTypes";
 
 export const login = async (req: Request, res: Response) => {
   try {
     const user = await dbLogin(req.body);
+    const validateUser = await findByEmail(req.body.email);
+
+    if (!validateUser) {
+      handleError(res, StatusCodes.NotFound, "User not registered");
+    }
 
     if (!user) {
-      res.json({
-        success: false,
-        message: "Invalid email or password",
-      });
+      handleError(res, StatusCodes.BadRequest, "Invalid email or password");
     }
 
     const userResponse = createUserResponse(user);
 
     const token = handleJwt(userResponse);
 
-    res.status(200).json({
-      success: true,
+    handleSuccess(res, StatusCodes.OK, {
       token,
       user: userResponse,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
-    });
+    handleError(
+      res,
+      StatusCodes.InternalServerError,
+      "Something went wrong. Please try again later..."
+    );
   }
 };
 
@@ -40,10 +44,7 @@ export const register = async (req: Request, res: Response) => {
     const emailTaken = await findByEmail(req.body.email);
 
     if (emailTaken) {
-      res.status(400).json({
-        success: false,
-        message: "Email already taken",
-      });
+      handleError(res, StatusCodes.BadRequest, "Email already taken");
     }
 
     const newUser = await dbRegister(req.body);
@@ -52,15 +53,12 @@ export const register = async (req: Request, res: Response) => {
 
     const token = handleJwt(userResponse);
 
-    res.status(201).json({
-      success: true,
-      token,
-      user: userResponse,
-    });
+    handleSuccess(res, StatusCodes.Created, { token, user: userResponse });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
-    });
+    handleError(
+      res,
+      StatusCodes.InternalServerError,
+      "Something went wrong. Please try again later..."
+    );
   }
 };

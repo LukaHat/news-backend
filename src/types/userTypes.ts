@@ -19,3 +19,14 @@ export type UserDb = Omit<UserRegister, "password"> & {
 export type UserResponse = Omit<UserDb, "registeredAt"> & {
   createdAt: Date;
 };
+
+export interface JwtPayload extends UserDb {
+  iat: number;
+  exp: number;
+}
+
+export enum Role {
+  ADMIN = "admin",
+  GUEST = "guest",
+  EDITOR = "editor",
+}
