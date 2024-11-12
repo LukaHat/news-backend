@@ -1,3 +1,6 @@
+import { Request } from "express";
+import { Role } from "./userTypes";
+
 export enum StatusCodes {
   OK = 200,
   Created = 201,
@@ -12,4 +15,10 @@ export enum StatusCodes {
 export interface GlobalError extends Error {
   statusCode?: StatusCodes;
   message: string;
+}
+
+export interface RequestWithUser extends Request {
+  user: {
+    role: Role;
+  };
 }

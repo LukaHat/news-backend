@@ -1,9 +1,10 @@
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 import { JwtPayload } from "../types/userTypes";
 import jwt from "jsonwebtoken";
+import { RequestWithUser } from "../types/apiTypes";
 
-export const reqAuthentification = (
-  req: Request,
+export const requireAuthentification = (
+  req: RequestWithUser,
   res: Response,
   next: NextFunction
 ) => {
@@ -20,7 +21,7 @@ export const reqAuthentification = (
 
     const user = jwt.verify(token, process.env.JWT_KEY as string) as JwtPayload;
 
-    req.body.user = user;
+    req.user = user;
 
     next();
   } catch (error) {

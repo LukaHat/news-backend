@@ -1,25 +1,30 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import {
   login as dbLogin,
   register as dbRegister,
   findByEmail,
 } from "../repositories/UserRepository";
+import { StatusCodes } from "../types/apiTypes";
+import { createError } from "../utils/createError";
 import { createUserResponse } from "../utils/createUserResponse";
 import { handleJwt } from "../utils/handleJwt";
-import { handleError, handleSuccess } from "../utils/handleResponse";
-import { StatusCodes } from "../types/apiTypes";
+import { handleSuccess } from "../utils/handleResponse";
 
-export const login = async (req: Request, res: Response) => {
+export const login = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const user = await dbLogin(req.body);
     const validateUser = await findByEmail(req.body.email);
 
     if (!validateUser) {
-      handleError(res, StatusCodes.NotFound, "User not registered");
+      createError(StatusCodes.NotFound, next, "User not registered");
     }
 
     if (!user) {
-      handleError(res, StatusCodes.BadRequest, "Invalid email or password");
+      createError(StatusCodes.BadRequest, next, "Invalid email or password");
     }
 
     const userResponse = createUserResponse(user);
@@ -31,23 +36,29 @@ export const login = async (req: Request, res: Response) => {
       user: userResponse,
     });
   } catch (error) {
-    handleError(
-      res,
+    createError(
       StatusCodes.InternalServerError,
+      next,
       "Something went wrong. Please try again later..."
     );
   }
 };
 
-export const register = async (req: Request, res: Response) => {
+export const register = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const emailTaken = await findByEmail(req.body.email);
 
     if (emailTaken) {
-      handleError(res, StatusCodes.BadRequest, "Email already taken");
+      createError(StatusCodes.BadRequest, next, "Email already taken");
     }
 
     const newUser = await dbRegister(req.body);
+
+    if (!newUser) throw createError(StatusCodes.InternalServerError, next);
 
     const userResponse = createUserResponse(newUser);
 
@@ -55,9 +66,9 @@ export const register = async (req: Request, res: Response) => {
 
     handleSuccess(res, StatusCodes.Created, { token, user: userResponse });
   } catch (error) {
-    handleError(
-      res,
+    createError(
       StatusCodes.InternalServerError,
+      next,
       "Something went wrong. Please try again later..."
     );
   }

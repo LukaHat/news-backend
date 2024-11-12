@@ -2,15 +2,13 @@ import { NextFunction, Request, Response } from "express";
 import {
   createNews as dbCreateNews,
   deleteNews as dbDeleteNews,
-  getAllNews as dbGetAllNews,
+  getFrontpageNews as dbGetAllNews,
   getNewsById as dbGetNewsById,
   updateNews as dbUpdateNews,
 } from "../repositories/NewsRepository.ts";
 import { StatusCodes } from "../types/apiTypes.ts";
-import { Role } from "../types/userTypes.ts";
-import { handleSuccess } from "../utils/handleResponse.ts";
-import { reqGuard } from "../utils/reqGuard.ts";
 import { createError } from "../utils/createError.ts";
+import { handleSuccess } from "../utils/handleResponse.ts";
 
 export const createNews = async (
   req: Request,
@@ -18,10 +16,6 @@ export const createNews = async (
   next: NextFunction
 ) => {
   try {
-    const { role } = req.body.user;
-
-    reqGuard(res, [Role.ADMIN, Role.EDITOR], role);
-
     if (!req.file) {
       return createError(
         StatusCodes.BadRequest,
@@ -37,6 +31,8 @@ export const createNews = async (
 
     const data = await dbCreateNews(newsData);
 
+    if (!data) throw createError(StatusCodes.InternalServerError, next);
+
     handleSuccess(res, StatusCodes.Created, data);
   } catch (error) {
     createError(StatusCodes.InternalServerError, next);
@@ -49,10 +45,7 @@ export const deleteNews = async (
   next: NextFunction
 ) => {
   try {
-    const { role } = req.body.user;
     const { id } = req.params;
-
-    reqGuard(res, [Role.ADMIN], role);
 
     const data = await dbDeleteNews(id);
 
@@ -98,14 +91,13 @@ export const updateNews = async (
   next: NextFunction
 ) => {
   try {
-    const { role } = req.body.user;
     const { id } = req.params;
-
-    reqGuard(res, [Role.EDITOR, Role.ADMIN], role);
 
     const updateData = { ...req.body };
 
     const data = await dbUpdateNews(id, updateData);
+
+    if (!data) throw createError(StatusCodes.InternalServerError, next);
 
     handleSuccess(res, StatusCodes.OK, data);
   } catch (error) {

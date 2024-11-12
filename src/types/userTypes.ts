@@ -8,7 +8,7 @@ export interface UserLogin {
 export interface UserRegister extends UserLogin {
   fullName?: string;
   alias?: string;
-  role: string;
+  role: Role;
 }
 
 export type UserDb = Omit<UserRegister, "password"> & {
