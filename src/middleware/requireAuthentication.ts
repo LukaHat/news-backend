@@ -1,10 +1,10 @@
 import { Response, NextFunction } from "express";
 import { JwtPayload } from "../types/userTypes";
 import jwt from "jsonwebtoken";
-import { RequestWithUser } from "../types/apiTypes";
+import { UserRequest } from "../types/apiTypes";
 
-export const requireAuthentification = (
-  req: RequestWithUser,
+export const requireAuthentication = (
+  req: UserRequest,
   res: Response,
   next: NextFunction
 ) => {

@@ -8,7 +8,7 @@ export interface UserLogin {
 export interface UserRegister extends UserLogin {
   fullName?: string;
   alias?: string;
-  role: Role;
+  role: RoleEnum;
 }
 
 export type UserDb = Omit<UserRegister, "password"> & {
@@ -25,7 +25,7 @@ export interface JwtPayload extends UserDb {
   exp: number;
 }
 
-export enum Role {
+export enum RoleEnum {
   ADMIN = "admin",
   GUEST = "guest",
   EDITOR = "editor",

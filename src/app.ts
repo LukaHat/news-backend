@@ -2,11 +2,9 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import { handleErrorMiddleware } from "./middleware/errorMiddleware";
-import { requireAuthentification } from "./middleware/requireAuthentification";
-import { newsRouter } from "./routes/newsRoutes";
-import { userRouter } from "./routes/userRoutes";
 import { config } from "./config";
 import mongoose from "mongoose";
+import { mainRouter } from "./router";
 
 const app = express();
 app.use(cors());
@@ -26,7 +24,6 @@ mongoose.connection.once("open", () => {
 
 app.listen(config.port, () => console.log("Server started"));
 
-app.use("/auth", userRouter);
-app.use("/news", requireAuthentification, newsRouter);
+app.use(mainRouter);
 
 app.use(handleErrorMiddleware);

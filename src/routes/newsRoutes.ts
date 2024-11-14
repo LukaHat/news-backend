@@ -9,7 +9,7 @@ import {
 import multer from "multer";
 import { handleBreakingNews } from "../middleware/breakingNewsMiddleware";
 import { handleAuthorization } from "../middleware/handleAuthorization";
-import { Role } from "../types/userTypes";
+import { RoleEnum } from "../types/userTypes";
 
 const upload = multer({ dest: "uploads/" });
 
@@ -17,18 +17,18 @@ export const newsRouter = express.Router();
 
 newsRouter.get("/", getAllNews);
 newsRouter.get("/:id", getNewsById);
-newsRouter.delete("/:id", handleAuthorization([Role.ADMIN]), deleteNews);
+newsRouter.delete("/:id", handleAuthorization([RoleEnum.ADMIN]), deleteNews);
 newsRouter.patch(
   "/:id",
   upload.single("imageUrl"),
-  handleAuthorization([Role.EDITOR, Role.ADMIN]),
+  handleAuthorization([RoleEnum.EDITOR, RoleEnum.ADMIN]),
   handleBreakingNews,
   updateNews
 );
 newsRouter.post(
   "/",
   upload.single("imageUrl"),
-  handleAuthorization([Role.ADMIN, Role.EDITOR]),
+  handleAuthorization([RoleEnum.ADMIN, RoleEnum.EDITOR]),
   handleBreakingNews,
   createNews
 );

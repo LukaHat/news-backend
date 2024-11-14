@@ -1,5 +1,6 @@
 import { Request } from "express";
-import { Role } from "./userTypes";
+import { RoleEnum } from "./userTypes";
+import { Types } from "mongoose";
 
 export enum StatusCodes {
   OK = 200,
@@ -13,12 +14,13 @@ export enum StatusCodes {
 }
 
 export interface GlobalError extends Error {
-  statusCode?: StatusCodes;
   message: string;
+  statusCode?: StatusCodes;
 }
 
-export interface RequestWithUser extends Request {
+export interface UserRequest extends Request {
   user: {
-    role: Role;
+    _id: Types.ObjectId;
+    role: RoleEnum;
   };
 }

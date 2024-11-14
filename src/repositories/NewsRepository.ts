@@ -3,6 +3,7 @@ import { NewsPostModel } from "../models/NewsPost";
 import { handleBreakingNewsExpiration } from "../utils/breakingNewsExpiration";
 import { deleteImage } from "../utils/deleteImage";
 import { refineFieldsToUpdate } from "../utils/refineFieldsToUpdate";
+import { GlobalError, StatusCodes } from "../types/apiTypes";
 
 export const getFrontpageNews = async () => {
   const categories = await getAllCategories();
@@ -50,6 +51,14 @@ export const updateNews = async (
 
 export const deleteNews = async (id: string) => {
   const postToDelete = await getNewsById(id);
+
+  if (!postToDelete) {
+    const error: GlobalError = new Error(
+      "Could not find the post you are trying to delete"
+    );
+    error.statusCode = StatusCodes.NotFound;
+    throw error;
+  }
 
   if (postToDelete.imageUrl) {
     const imagePath = postToDelete.imageUrl;

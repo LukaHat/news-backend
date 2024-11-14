@@ -1,10 +1,10 @@
 import { NextFunction, Response } from "express";
-import { RequestWithUser, StatusCodes } from "../types/apiTypes";
-import { Role } from "../types/userTypes";
+import { UserRequest, StatusCodes } from "../types/apiTypes";
+import { RoleEnum } from "../types/userTypes";
 import { createError } from "../utils/createError";
 
-export const handleAuthorization = (requiredRoles: Role[]) => {
-  return (req: RequestWithUser, res: Response, next: NextFunction) => {
+export const handleAuthorization = (requiredRoles: RoleEnum[]) => {
+  return (req: UserRequest, res: Response, next: NextFunction) => {
     const { role } = req.user;
 
     const isAuthorized = requiredRoles.includes(role);

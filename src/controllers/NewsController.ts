@@ -6,7 +6,7 @@ import {
   getNewsById as dbGetNewsById,
   updateNews as dbUpdateNews,
 } from "../repositories/NewsRepository.ts";
-import { StatusCodes } from "../types/apiTypes.ts";
+import { GlobalError, StatusCodes } from "../types/apiTypes.ts";
 import { createError } from "../utils/createError.ts";
 import { handleSuccess } from "../utils/handleResponse.ts";
 
@@ -51,6 +51,10 @@ export const deleteNews = async (
 
     handleSuccess(res, StatusCodes.OK, data);
   } catch (error) {
+    if (error.statusCode === StatusCodes.NotFound) {
+      createError(error.statusCode, next, error.message as string);
+    }
+
     createError(StatusCodes.InternalServerError, next);
   }
 };
