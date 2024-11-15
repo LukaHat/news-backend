@@ -1,5 +1,5 @@
 import { NextFunction, Response } from "express";
-import { UserRequest, StatusCodes } from "../types/apiTypes";
+import { UserRequest, StatusCodesEnum } from "../types/apiTypes";
 import { RoleEnum } from "../types/userTypes";
 import { createError } from "../utils/createError";
 
@@ -11,7 +11,7 @@ export const handleAuthorization = (requiredRoles: RoleEnum[]) => {
 
     if (!isAuthorized) {
       createError(
-        StatusCodes.Forbidden,
+        StatusCodesEnum.Forbidden,
         next,
         "Not authorized to make this request"
       );

@@ -5,11 +5,11 @@ export interface NewsPostCreate {
   shortDescription: string;
   fullDescription: string;
   imageUrl: string;
-  category?: Category;
+  category?: CategoryEnum;
   isBreakingNews: boolean;
 }
 
-export enum Category {
+export enum CategoryEnum {
   WORLDWIDE = "worldwide",
   LOCAL = "local",
   SPORT = "sport",
@@ -20,7 +20,7 @@ export interface NewsPost extends Document {
   shortDescription: string;
   fullDescription: string;
   imageUrl: string;
-  category?: Category;
+  category?: CategoryEnum;
   isBreakingNews: boolean;
   createdAt: Date;
   updatedAt: Date;

@@ -1,9 +1,9 @@
-import { StatusCodes } from "apiTypes";
+import { StatusCodesEnum } from "apiTypes";
 import { Response } from "express";
 
 export const handleSuccess = <T>(
   res: Response,
-  statusCode: StatusCodes,
+  statusCode: StatusCodesEnum,
   data?: T
 ) => {
   res.status(statusCode).json({
@@ -14,7 +14,7 @@ export const handleSuccess = <T>(
 
 export const handleError = (
   res: Response,
-  statusCode: StatusCodes,
+  statusCode: StatusCodesEnum,
   message: string
 ) => {
   res.status(statusCode).json({

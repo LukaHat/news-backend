@@ -3,7 +3,7 @@ import { NewsPostModel } from "../models/NewsPost";
 import { handleBreakingNewsExpiration } from "../utils/breakingNewsExpiration";
 import { deleteImage } from "../utils/deleteImage";
 import { refineFieldsToUpdate } from "../utils/refineFieldsToUpdate";
-import { GlobalError, StatusCodes } from "../types/apiTypes";
+import { GlobalError, StatusCodesEnum } from "../types/apiTypes";
 
 export const getFrontpageNews = async () => {
   const categories = await getAllCategories();
@@ -13,6 +13,7 @@ export const getFrontpageNews = async () => {
   const newsFromCategories = await Promise.all(
     categories.map(async (category) => {
       return await NewsPostModel.find({ category })
+        .select("-views")
         .where({ isBreakingNews: false })
         .limit(4);
     })
@@ -34,7 +35,7 @@ export const updateNews = async (
   id: string,
   updateData: Partial<NewsPostCreate>
 ) => {
-  const postToUpdate = await getNewsById(id);
+  const postToUpdate = await NewsPostModel.findById(id);
 
   const updatedPost = await NewsPostModel.findByIdAndUpdate(
     id,
@@ -50,13 +51,13 @@ export const updateNews = async (
 };
 
 export const deleteNews = async (id: string) => {
-  const postToDelete = await getNewsById(id);
+  const postToDelete = await NewsPostModel.findById(id);
 
   if (!postToDelete) {
     const error: GlobalError = new Error(
       "Could not find the post you are trying to delete"
     );
-    error.statusCode = StatusCodes.NotFound;
+    error.statusCode = StatusCodesEnum.NotFound;
     throw error;
   }
 
@@ -69,11 +70,24 @@ export const deleteNews = async (id: string) => {
 };
 
 export const getNewsById = async (id: string) => {
-  return await NewsPostModel.findById(id);
+  const data = await NewsPostModel.findByIdAndUpdate(
+    id,
+    {
+      $inc: {
+        views: 1,
+      },
+    },
+    {
+      new: true,
+    }
+  );
+  return data;
 };
 
 const getBreakingNewsPost = async () => {
-  return await NewsPostModel.find().where({ isBreakingNews: true });
+  return await NewsPostModel.find()
+    .select("-views")
+    .where({ isBreakingNews: true });
 };
 
 const getAllCategories = async () => {
