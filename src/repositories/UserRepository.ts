@@ -23,3 +23,7 @@ export const register = async (newUserData: UserRegister) => {
 export const findByEmail = async (email: string) => {
   return await UserModel.findOne({ email });
 };
+
+export const getRoleById = async (id: string) => {
+  return await UserModel.findById(id).select("role");
+};

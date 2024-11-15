@@ -1,16 +1,17 @@
 import express from "express";
-import dotenv from "dotenv";
 import cors from "cors";
-import { userRouter } from "./routes/userRoutes";
+import helmet from "helmet";
+import { handleErrorMiddleware } from "./middleware/errorMiddleware";
+import { config } from "./config";
+import mongoose from "mongoose";
+import { mainRouter } from "./router";
 
-dotenv.config();
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(helmet());
 
-import mongoose from "mongoose";
-
-mongoose.connect(process.env.MONGO_URI as string);
+mongoose.connect(config.mongoUri);
 
 mongoose.connection.on("error", (error) => {
   console.log(error);
@@ -21,8 +22,8 @@ mongoose.connection.once("open", () => {
   console.log("Succesfull connection");
 });
 
-const port = 8000;
+app.listen(config.port, () => console.log("Server started"));
 
-app.listen(port, () => console.log("Server started"));
+app.use(mainRouter);
 
-app.use("/auth", userRouter);
+app.use(handleErrorMiddleware);

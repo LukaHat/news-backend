@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { hashPassword } from "../utils/passwordHash";
+import { RoleEnum } from "../types/userTypes";
 
 const UserSchema = new mongoose.Schema(
   {
@@ -14,7 +15,7 @@ const UserSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["admin", "editor", "guest"],
+      enum: Object.values(RoleEnum),
       required: true,
     },
     fullName: {

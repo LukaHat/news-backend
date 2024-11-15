@@ -1,0 +1,1 @@
+export const BREAKING_NEWS_EXPIRATION = 48;
