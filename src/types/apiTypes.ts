@@ -2,7 +2,7 @@ import { Request } from "express";
 import { RoleEnum } from "./userTypes";
 import { Types } from "mongoose";
 
-export enum StatusCodesEnum {
+export enum StatusCodes {
   OK = 200,
   Created = 201,
   Accepted = 202,
@@ -15,7 +15,7 @@ export enum StatusCodesEnum {
 
 export interface GlobalError extends Error {
   message: string;
-  statusCode?: StatusCodesEnum;
+  statusCode?: StatusCodes;
 }
 
 export interface UserRequest extends Request {

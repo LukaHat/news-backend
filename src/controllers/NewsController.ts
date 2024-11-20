@@ -6,7 +6,7 @@ import {
   getNewsById as dbGetNewsById,
   updateNews as dbUpdateNews,
 } from "../repositories/NewsRepository.ts";
-import { StatusCodesEnum } from "../types/apiTypes.ts";
+import { StatusCodes } from "../types/apiTypes.ts";
 import { createError } from "../utils/createError.ts";
 import { handleSuccess } from "../utils/handleResponse.ts";
 
@@ -18,7 +18,7 @@ export const createNews = async (
   try {
     if (!req.file) {
       return createError(
-        StatusCodesEnum.BadRequest,
+        StatusCodes.BadRequest,
         next,
         "Bad request! You need to provide the image"
       );
@@ -31,11 +31,11 @@ export const createNews = async (
 
     const data = await dbCreateNews(newsData);
 
-    if (!data) throw createError(StatusCodesEnum.InternalServerError, next);
+    if (!data) throw createError(StatusCodes.InternalServerError, next);
 
-    handleSuccess(res, StatusCodesEnum.Created, data);
+    handleSuccess(res, StatusCodes.Created, data);
   } catch (error) {
-    createError(StatusCodesEnum.InternalServerError, next);
+    createError(StatusCodes.InternalServerError, next);
   }
 };
 
@@ -49,13 +49,13 @@ export const deleteNews = async (
 
     const data = await dbDeleteNews(id);
 
-    handleSuccess(res, StatusCodesEnum.OK, data);
+    handleSuccess(res, StatusCodes.OK, data);
   } catch (error) {
-    if (error.statusCode === StatusCodesEnum.NotFound) {
+    if (error.statusCode === StatusCodes.NotFound) {
       createError(error.statusCode, next, error.message as string);
     }
 
-    createError(StatusCodesEnum.InternalServerError, next);
+    createError(StatusCodes.InternalServerError, next);
   }
 };
 
@@ -67,9 +67,9 @@ export const getAllNews = async (
   try {
     const data = await dbGetAllNews();
 
-    handleSuccess(res, StatusCodesEnum.OK, data);
+    handleSuccess(res, StatusCodes.OK, data);
   } catch (error) {
-    createError(StatusCodesEnum.InternalServerError, next);
+    createError(StatusCodes.InternalServerError, next);
   }
 };
 
@@ -84,11 +84,11 @@ export const getNewsById = async (
     const data = await dbGetNewsById(id);
 
     if (!data)
-      throw createError(StatusCodesEnum.NotFound, next, "News post not found");
+      throw createError(StatusCodes.NotFound, next, "News post not found");
 
-    handleSuccess(res, StatusCodesEnum.OK, data);
+    handleSuccess(res, StatusCodes.OK, data);
   } catch (error) {
-    createError(StatusCodesEnum.InternalServerError, next);
+    createError(StatusCodes.InternalServerError, next);
   }
 };
 
@@ -104,10 +104,10 @@ export const updateNews = async (
 
     const data = await dbUpdateNews(id, updateData);
 
-    if (!data) throw createError(StatusCodesEnum.InternalServerError, next);
+    if (!data) throw createError(StatusCodes.InternalServerError, next);
 
-    handleSuccess(res, StatusCodesEnum.OK, data);
+    handleSuccess(res, StatusCodes.OK, data);
   } catch (error) {
-    createError(StatusCodesEnum.InternalServerError, next);
+    createError(StatusCodes.InternalServerError, next);
   }
 };

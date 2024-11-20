@@ -1,8 +1,8 @@
 import { NextFunction } from "express";
-import { GlobalError, StatusCodesEnum } from "../types/apiTypes";
+import { GlobalError, StatusCodes } from "../types/apiTypes";
 
 export const createError = (
-  statusCode: StatusCodesEnum,
+  statusCode: StatusCodes,
   next: NextFunction,
   message?: string
 ) => {
