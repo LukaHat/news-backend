@@ -6,7 +6,7 @@ import {
   getNewsById as dbGetNewsById,
   updateNews as dbUpdateNews,
 } from "../repositories/NewsRepository.ts";
-import { GlobalError, StatusCodes } from "../types/apiTypes.ts";
+import { StatusCodes } from "../types/apiTypes.ts";
 import { createError } from "../utils/createError.ts";
 import { handleSuccess } from "../utils/handleResponse.ts";
 
@@ -82,6 +82,9 @@ export const getNewsById = async (
     const { id } = req.params;
 
     const data = await dbGetNewsById(id);
+
+    if (!data)
+      throw createError(StatusCodes.NotFound, next, "News post not found");
 
     handleSuccess(res, StatusCodes.OK, data);
   } catch (error) {

@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { Category } from "../types/newsTypes";
+import { CategoryEnum } from "../types/newsTypes";
 
 const NewsPostSchema = new mongoose.Schema(
   {
@@ -21,11 +21,15 @@ const NewsPostSchema = new mongoose.Schema(
     },
     category: {
       type: String,
-      enum: Object.values(Category),
+      enum: Object.values(CategoryEnum),
     },
     isBreakingNews: {
       type: Boolean,
       default: false,
+    },
+    views: {
+      type: Number,
+      default: 0,
     },
   },
   {

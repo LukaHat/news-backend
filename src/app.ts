@@ -5,11 +5,13 @@ import { handleErrorMiddleware } from "./middleware/errorMiddleware";
 import { config } from "./config";
 import mongoose from "mongoose";
 import { mainRouter } from "./router";
+import { limiter } from "./utils/rateLimiter";
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(helmet());
+app.use(limiter);
 
 mongoose.connect(config.mongoUri);
 
