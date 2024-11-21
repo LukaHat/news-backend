@@ -81,7 +81,7 @@ export const getNewsById = async (
   try {
     const { id } = req.params;
 
-    const commentPage = parseInt(req.query.page as string) || 1;
+    const commentPage = +req.query.page;
 
     const data = await dbGetNewsById(id, commentPage);
 

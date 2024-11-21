@@ -70,7 +70,7 @@ export const deleteNews = async (id: string) => {
   return await NewsPostModel.findByIdAndDelete(id);
 };
 
-export const getNewsById = async (id: string, commentPage: number) => {
+export const getNewsById = async (id: string, commentPage: number = 1) => {
   if (commentPage > 1) {
     return await getCommentsByPostId(id, commentPage);
   }
