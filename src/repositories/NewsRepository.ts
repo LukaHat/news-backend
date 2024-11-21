@@ -70,9 +70,11 @@ export const deleteNews = async (id: string) => {
   return await NewsPostModel.findByIdAndDelete(id);
 };
 
-export const getNewsById = async (id: string, commentPage: number = 1) => {
-  if (commentPage > 1) {
-    return await getCommentsByPostId(id, commentPage);
+export const getNewsById = async (id: string, commentPage: string = "1") => {
+  const page = Number(commentPage);
+
+  if (page > 1) {
+    return await getCommentsByPostId(id, page);
   }
 
   const newsPostData = await NewsPostModel.findByIdAndUpdate(
@@ -87,7 +89,7 @@ export const getNewsById = async (id: string, commentPage: number = 1) => {
     }
   );
 
-  const commentData = await getCommentsByPostId(id, commentPage);
+  const commentData = await getCommentsByPostId(id, page);
 
   const data = { ...newsPostData.toObject(), ...commentData };
   return data;

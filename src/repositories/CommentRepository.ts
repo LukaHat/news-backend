@@ -23,7 +23,7 @@ export const deleteComment = async (commentId: string) => {
   return await CommentModel.findByIdAndDelete(commentId);
 };
 
-export const getCommentsByPostId = async (postId: string, page: number) => {
+export const getCommentsByPostId = async (postId: string, page: number = 1) => {
   const comments = await CommentModel.find({ postId: postId })
     .sort("-createdAt")
     .skip((page - 1) * COMMENTS_PER_PAGE)
