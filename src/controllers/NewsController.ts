@@ -81,7 +81,9 @@ export const getNewsById = async (
   try {
     const { id } = req.params;
 
-    const data = await dbGetNewsById(id);
+    const commentPage = parseInt(req.query.page as string) || 1;
+
+    const data = await dbGetNewsById(id, commentPage);
 
     if (!data)
       throw createError(StatusCodes.NotFound, next, "News post not found");

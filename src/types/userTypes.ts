@@ -23,6 +23,7 @@ export type UserResponse = Omit<UserDb, "registeredAt"> & {
 export interface JwtPayload extends UserDb {
   iat: number;
   exp: number;
+  fullName: string;
 }
 
 export enum RoleEnum {

@@ -22,5 +22,6 @@ export interface UserRequest extends Request {
   user: {
     _id: Types.ObjectId;
     role: RoleEnum;
+    fullName: string;
   };
 }
