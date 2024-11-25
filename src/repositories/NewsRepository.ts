@@ -4,6 +4,7 @@ import { handleBreakingNewsExpiration } from "../utils/breakingNewsExpiration";
 import { deleteImage } from "../utils/deleteImage";
 import { refineFieldsToUpdate } from "../utils/refineFieldsToUpdate";
 import { GlobalError, StatusCodes } from "../types/apiTypes";
+import { getCommentsByPostId } from "./CommentRepository";
 
 export const getFrontpageNews = async () => {
   const categories = await getAllCategories();
@@ -69,8 +70,14 @@ export const deleteNews = async (id: string) => {
   return await NewsPostModel.findByIdAndDelete(id);
 };
 
-export const getNewsById = async (id: string) => {
-  const data = await NewsPostModel.findByIdAndUpdate(
+export const getNewsById = async (id: string, commentPage: string = "1") => {
+  const page = Number(commentPage);
+
+  if (page > 1) {
+    return await getCommentsByPostId(id, page);
+  }
+
+  const newsPostData = await NewsPostModel.findByIdAndUpdate(
     id,
     {
       $inc: {
@@ -81,6 +88,10 @@ export const getNewsById = async (id: string) => {
       new: true,
     }
   );
+
+  const commentData = await getCommentsByPostId(id, page);
+
+  const data = { ...newsPostData.toObject(), ...commentData };
   return data;
 };
 
