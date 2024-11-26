@@ -1,5 +1,5 @@
-import { NewsPostCreate } from "../types/newsTypes";
-import { NewsPostModel } from "../models/NewsPost";
+import { CategoryEnum, NewsPostCreate } from "../types/newsTypes";
+import { FetchedPostModel, NewsPostModel } from "../models/NewsPost";
 import { handleBreakingNewsExpiration } from "../utils/breakingNewsExpiration";
 import { deleteImage } from "../utils/deleteImage";
 import { refineFieldsToUpdate } from "../utils/refineFieldsToUpdate";
@@ -23,8 +23,13 @@ export const getFrontpageNews = async () => {
   return [breakingNewsPost, ...newsFromCategories].flat();
 };
 
-export const createNews = async (newsPostData: NewsPostCreate) => {
-  const newNewsPost = new NewsPostModel({ ...newsPostData });
+export const createNews = async (
+  newsPostData: NewsPostCreate,
+  isPopulating?: boolean
+) => {
+  const newNewsPost = isPopulating
+    ? new FetchedPostModel({ ...newsPostData })
+    : new NewsPostModel({ ...newsPostData });
 
   if (newNewsPost.isBreakingNews) {
     handleBreakingNewsExpiration(newNewsPost._id);

@@ -5,6 +5,7 @@ import {
   deleteNews,
   getNewsById,
   updateNews,
+  populateNews,
 } from "../controllers/NewsController";
 import multer from "multer";
 import { handleBreakingNews } from "../middleware/breakingNewsMiddleware";
@@ -16,6 +17,7 @@ const upload = multer({ dest: "uploads/" });
 export const newsRouter = express.Router();
 
 newsRouter.get("/", getAllNews);
+newsRouter.get("/populate/:query", populateNews);
 newsRouter.get("/:id", getNewsById);
 newsRouter.delete("/:id", handleAuthorization([RoleEnum.ADMIN]), deleteNews);
 newsRouter.patch(

@@ -9,6 +9,47 @@ import {
 import { StatusCodes } from "../types/apiTypes.ts";
 import { createError } from "../utils/createError.ts";
 import { handleSuccess } from "../utils/handleResponse.ts";
+import { fetchNewsPosts } from "../utils/fetchNews.ts";
+import { FetchedNewsPost, NewsPostCreate } from "../types/newsTypes.ts";
+import { mapArticle } from "../utils/mapFetchedPosts.ts";
+
+export const populateNews = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { query } = req.params;
+
+    const fetchedNewsPosts: FetchedNewsPost[] = await fetchNewsPosts(query);
+
+    if (fetchedNewsPosts.length === 0) {
+      createError(StatusCodes.NotFound, next, "No articles found");
+    }
+
+    const mappedNewsPosts = fetchedNewsPosts.map((post) => mapArticle(post));
+
+    const data = await Promise.all(
+      mappedNewsPosts.map(async (article: NewsPostCreate) => {
+        try {
+          return await dbCreateNews(article, true);
+        } catch (error) {
+          createError(
+            StatusCodes.InternalServerError,
+            next,
+            "Could not create article"
+          );
+        }
+      })
+    );
+
+    if (!data) throw createError(StatusCodes.InternalServerError, next);
+
+    handleSuccess(res, StatusCodes.OK, data);
+  } catch (error) {
+    createError(StatusCodes.InternalServerError, next);
+  }
+};
 
 export const createNews = async (
   req: Request,
