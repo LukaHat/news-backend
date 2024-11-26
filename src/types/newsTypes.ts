@@ -25,3 +25,9 @@ export interface NewsPost extends Document {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface FetchedNewsPost {
+  title: string;
+  description: string;
+  urlToImage: string;
+}

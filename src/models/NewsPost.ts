@@ -38,3 +38,7 @@ const NewsPostSchema = new mongoose.Schema(
 );
 
 export const NewsPostModel = mongoose.model("NewsPost", NewsPostSchema);
+export const FetchedPostModel = mongoose.model(
+  "FetchedNewsPost",
+  NewsPostSchema
+);
