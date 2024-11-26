@@ -8,7 +8,7 @@ import {
 } from "../repositories/NewsRepository.ts";
 import { StatusCodes } from "../types/apiTypes.ts";
 import { createError } from "../utils/createError.ts";
-import { handleSuccess } from "../utils/handleResponse.ts";
+import { handleError, handleSuccess } from "../utils/handleResponse.ts";
 import { fetchNewsPosts } from "../utils/fetchNews.ts";
 import { FetchedNewsPost, NewsPostCreate } from "../types/newsTypes.ts";
 import { mapArticle } from "../utils/mapFetchedPosts.ts";
@@ -24,7 +24,7 @@ export const populateNews = async (
     const fetchedNewsPosts: FetchedNewsPost[] = await fetchNewsPosts(query);
 
     if (fetchedNewsPosts.length === 0) {
-      createError(StatusCodes.NotFound, next, "No articles found");
+      handleError(res, StatusCodes.OK, "No articles found");
     }
 
     const mappedNewsPosts = fetchedNewsPosts.map((post) => mapArticle(post));
@@ -43,7 +43,12 @@ export const populateNews = async (
       })
     );
 
-    if (!data) throw createError(StatusCodes.InternalServerError, next);
+    if (!data)
+      throw createError(
+        StatusCodes.InternalServerError,
+        next,
+        "Could not create article"
+      );
 
     handleSuccess(res, StatusCodes.OK, data);
   } catch (error) {

@@ -17,7 +17,7 @@ export const mapArticle = (article: FetchedNewsPost) => {
   };
 };
 
-export const shortenDescription = (description: string, words: number = 5) =>
+export const shortenDescription = (description: string, words: number = 7) =>
   `${description.split(" ").slice(0, words).join(" ")}...`;
 
 export const placeholderArticle: Partial<NewsPostCreate> = {
